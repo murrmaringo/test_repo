@@ -1,0 +1,154 @@
+package ru.tbank.hse.fd.streamPractise.service;
+
+import ru.tbank.hse.fd.streamPractise.model.Car;
+import ru.tbank.hse.fd.streamPractise.model.CarInfo;
+import ru.tbank.hse.fd.streamPractise.model.Owner;
+
+import java.util.List;
+
+/**
+ * Необходимо реализовать каждый метод
+ * <p>
+ * Запрещено использовать if, for, foreach...
+ * Все методы реализуются в одну строчку
+ * Можно использовать только stream API
+ *
+ */
+public class CarService {
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть список строк из Condition
+     */
+    public List<String> getConditions(List<Car> cars) {
+        return cars.stream()
+                .map(car-> car.getCondition())
+                .toList();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть только те, у которых Condition - "NEW"
+     */
+    public List<Car> getNewCars(List<Car> cars) {
+        return cars.stream()
+                .filter(car -> car.getCondition() == "NEW")
+                .toList();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть количество Car, у которых больше 2 Owners
+     */
+    public long countCarsOwners(List<Car> cars) {
+        return cars.stream()
+                .filter(car -> car.getOwners() > 2)
+                .count();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо каждому элементу списка в поле age прибавить 1
+     */
+    public List<Car> incrementCarAge(List<Car> cars) {
+        return cars.stream()
+                .peek(car -> car.getAge(car.getAge() + 1));
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть Car, у которого самое большое значение age
+     */
+    public Car getOldestCar(List<Car> cars) {
+        return cars.stream()
+                .min(Comparator.comparing(Car::getAge))
+                .getorElseThrow(RuntimeException::new);
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть список имён всех владельцев
+     * Имена не должны повторяться
+     */
+    public List<String> getOwnersCarsNames(List<Car> cars) {
+        return cars.stream()
+                .map(car -> car.getName())
+                .distinct()
+                .toList();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо преобразовать его в список CarInfo
+     */
+    public List<CarInfo> mapToCarInfo(List<Car> cars) {
+        return cars.stream()
+                .map(car -> new CarInfo(car.getName(), car.getAge(), car.getOwners()))
+                .toList();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть не более двух машин, у которых Condition - BROKEN
+     */
+    public List<Car> getTwoBrokenCar(List<Car> cars) {
+        return cars.stream()
+                .filter(e -> e.getCondition() == "BROKEN")
+                .limit(2)
+                .toList();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть отсортированный по полю age список Car
+     */
+    public List<Car> getSortedCarsByAge(List<Car> cars) {
+        return cars.stream()
+                .sorted(Comparator.comparing(e -> e.getAge))
+                .toList();
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо посчитать средний возраст всех машин
+     */
+    public double getAvgCarsAge(List<Car> cars) {
+        return cars.stream()
+                .map(e -> e.getAge).sum() /
+                cars.stream()
+                .map(e -> e.getAge)
+                .toList().size();
+    }
+
+    /**
+     * Приходит список Car
+     * Проверить, что все машины с Condition - "Broken" старше 10 лет
+     */
+    public Boolean checkBrokenCarsAge(List<Car> cars) {
+        return cars.stream()
+                .filter(e -> e.getCondition == "Broken")
+                .toList()
+                .size() == cars.stream().filter(e -> e.getCondition()).filter(e -> e.getAge > 10).toList().size();
+    }
+
+    /**
+     * Приходит список Car
+     * Проверить, что хотя бы у одной машины с Condition - "USED" был владелец по имени Adam
+     */
+    public Boolean checkCarOwnerName(List<Car> cars) {
+        return cars.stream()
+                .filter(e -> e.getCondition() == "USED")
+                .anyMatch(e -> e.getOwner() == "Adam");
+    }
+
+    /**
+     * Приходит список Car
+     * Необходимо вернуть любого Owner старше 36 лет
+     */
+    public Owner getAnyOwner(List<Car> cars) {
+        return cars.stream()
+                .filter(e -> e.getOwner() > 36)
+                .toList()
+                .get(1);
+    }
+}
